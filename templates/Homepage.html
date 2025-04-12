@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Welcome to Musicbxd!</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}">
+
+</head>
+<body>
+
+
+    <header>
+        <h2 class="logo2">MusicBxd</h2>
+        <nav class="navigation2">
+            <a href="{{ url_for('view') }}">View Logs</a>
+            <a href="{{ url_for('recommendation') }}">Recommendations</a>
+            <button class="btnLog">Log</button>
+        </nav>
+    </header>
+
+    <aside class="sidebar">
+       <div class="liked-grid">
+           <a href="{{ url_for('profile') }}">Profile</a>
+           <button class="btn2" onclick="logout()">Log out</button>
+       </div>
+    </aside>
+
+    <div class="logrec">
+        <h2>Log A Song</h2>
+        <span class="icon-close2"><ion-icon name="close-outline"></ion-icon></span>
+        <form action="#">
+                <div class="input-box">
+                    <input type="Text" required>
+                    <label>Artist:</label>
+                </div>
+
+                <div class="input-box">
+                    <input type="Text" required>
+                    <label>Song Title:</label>
+                </div>
+                <div class="input-box">
+                    <textarea required rows="4"></textarea>
+                    <label>Comment:</label>
+                </div>
+                <div class="star-widget">
+                    <input type="radio" name="rate" id="rate-5">
+                    <label for="rate-5" class="star">&#9733;</label>
+
+                    <input type="radio" name="rate" id="rate-4">
+                    <label for="rate-4" class="star">&#9733;</label>
+
+                    <input type="radio" name="rate" id="rate-3">
+                    <label for="rate-3" class="star">&#9733;</label>
+
+                    <input type="radio" name="rate" id="rate-2">
+                    <label for="rate-2" class="star">&#9733;</label>
+
+                    <input type="radio" name="rate" id="rate-1">
+                    <label for="rate-1" class="star">&#9733;</label>
+                </div>
+
+                <div>
+                  <button type="submit" class="btn">Submit</button>
+                </div>
+        </form>
+    </div>
+
+    <script>
+        function logout() {
+            window.location.href = "http://localhost:5000/logout";
+        }
+    </script>
+
+    <script src="{{ url_for('static', filename='js/scripts.js') }}"></script>
+    <script src="scripts.js"></script>
+    <script type="module" src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.esm.js"></script>
+    <script nomodule src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.js"></script>
+
+</body>
+</html>
+
