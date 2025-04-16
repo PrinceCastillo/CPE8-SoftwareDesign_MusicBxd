@@ -1,0 +1,89 @@
+@import url('https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;700&display=swap');
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Roboto', sans-serif;
+}
+
+body {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    background: linear-gradient(to bottom, #1a1e22, #0d0f10);
+    color: #eaeaea;
+    flex-direction: column;
+}
+
+header {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    padding: 20px 80px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background: rgba(20, 20, 20, 0.9);
+    backdrop-filter: blur(10px);
+    z-index: 99;
+}
+
+.logo {
+    font-size: 2em;
+    color: #00ff99;
+    font-weight: 700;
+    text-transform: none;
+    letter-spacing: 2px;
+    transition: 0.3s;
+}
+
+.logo:hover {
+    color: #ffcc00;
+}
+
+body {
+  font-family: 'Roboto', sans-serif;
+  background: #121212;
+  color: #1db954;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+  margin: 0;
+}
+
+.content {
+  text-align: center;
+}
+
+button {
+  background-color: #1db954;
+  color: #fff;
+  border: none;
+  padding: 1rem 2rem;
+  font-size: 1.2rem;
+  border-radius: 50px;
+  cursor: pointer;
+  transition: background 0.3s;
+}
+
+button:hover {
+  background-color: #1ed760;
+}
+
+.song-card {
+  margin-top: 2rem;
+}
+
+.song-card img {
+  width: 200px;
+  border-radius: 10px;
+  margin-bottom: 1rem;
+}
+
+.song-card p {
+  margin: 0.5rem 0;
+}

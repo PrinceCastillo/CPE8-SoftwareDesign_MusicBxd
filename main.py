@@ -30,6 +30,37 @@ sp_oauth = SpotifyOAuth(
     show_dialog=True
 )
 
+@app.route('/login', methods=['POST'])
+def login():
+    email = request.form['email']
+    password = request.form['password']
+
+    cur = mysql.connection.cursor()
+    cur.execute("SELECT * FROM login WHERE email = %s AND password = %s", (email, password))
+    user = cur.fetchone()
+    cur.close()
+
+    if user:
+        session['username'] = user[1]
+        return redirect(url_for('homepage'))
+    else:
+        return render_template('MusicBxd.html', error="Invalid username or password")
+
+@app.route('/register', methods=['POST'])
+def register():
+    username = request.form['username']
+    email = request.form['email']
+    password = request.form['password']
+
+    cur = mysql.connection.cursor()
+    cur.execute("INSERT INTO login (username, email, password) VALUES (%s, %s, %s)",
+                (username, email, password))
+    mysql.connection.commit()
+    cur.close()
+
+    return redirect(url_for('musicbxd'))
+
+
 @app.route('/Musicbxd')
 def musicbxd():
     return render_template('MusicBxd.html')
@@ -72,38 +103,6 @@ def logout():
     session.clear()
     return redirect(url_for('musicbxd'))
 
-@app.route('/login', methods=['POST'])
-def login():
-    email = request.form['email']
-    password = request.form['password']
-
-    cur = mysql.connection.cursor()
-    cur.execute("SELECT * FROM login WHERE email = %s AND password = %s", (email, password))
-    user = cur.fetchone()
-    cur.close()
-
-    if user:
-        session['username'] = user[1]
-        return redirect(url_for('homepage'))
-    else:
-        return render_template('MusicBxd.html', error="Invalid username or password")
-
-@app.route('/register', methods=['POST'])
-def register():
-    username = request.form['username']
-    email = request.form['email']
-    password = request.form['password']
-
-    cur = mysql.connection.cursor()
-    cur.execute("INSERT INTO login (username, email, password) VALUES (%s, %s, %s)",
-                (username, email, password))
-    mysql.connection.commit()
-    cur.close()
-
-    return redirect(url_for('musicbxd'))
-
-
 
 if __name__ == '__main__':
     app.run(debug=True)
-

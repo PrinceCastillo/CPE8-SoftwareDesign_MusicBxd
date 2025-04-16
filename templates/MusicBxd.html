@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en" xmlns="http://www.w3.org/1999/html">
+<html lang="en">
 
 <head>
     <meta charset="UTF-8">
@@ -17,18 +17,38 @@
             <a href="#">About</a>
             <a href="#">Contact Us</a>
             <button class="btnLogin-popup">Login</button>
-
         </nav>
     </header>
 
+    <main>
+    <div class="content">
+        <div class="tag-box">
+            <div class="tag"> </div>
+        </div>
+
+        <h1>Welcome to MusicBxd</h1>
+
+        <p class="description">
+           A music logging app made for your music diaries where you can feel like you're in little own box!
+
+        </p>
+
+        <div class="buttons">
+            <a href="#" class="btn-get-started">Documentation &gt;</a>
+            <a href="#" class="btn-signing-main">Get started &gt;</a>
+        </div>
+    </div>
+    </main>
+
     <div class="wrapper">
         <span class="icon-close"><ion-icon name="close-outline"></ion-icon></span>
+
         <div class="form-box login">
             <h2>Log in</h2>
             <form action="{{ url_for('login') }}" method="POST">
                 <div class="input-box">
                     <span class="icon"><ion-icon name="mail-open-sharp"></ion-icon></span>
-                     <input type="email" name="email" required>
+                    <input type="email" name="email" required>
                     <label>Email</label>
                 </div>
 
@@ -38,16 +58,9 @@
                     <label>Password</label>
                 </div>
 
-                <div class="remember-forgot">
-                    <label><input type="checkbox"> Remember me?</label>
-                    <a href="#">Forgot Password?</a>
-                </div>
-
                 <button type="submit" class="btn">Login</button>
                 <div class="login-register">
-                    <p>Don't have an Account?
-                        <a href="#" class="register-link">Register!</a>
-                    </p>
+                    <p>Don't have an Account? <a href="#" class="register-link">Register!</a></p>
                 </div>
             </form>
         </div>
@@ -57,9 +70,10 @@
             <form action="{{ url_for('register') }}" method="POST">
                 <div class="input-box">
                     <span class="icon"><ion-icon name="person-outline"></ion-icon></span>
-                     <input type="text" name="username" required>
+                    <input type="text" name="username" required>
                     <label>Username</label>
                 </div>
+
                 <div class="input-box">
                     <span class="icon"><ion-icon name="mail-open-sharp"></ion-icon></span>
                     <input type="email" name="email" required>
@@ -73,23 +87,26 @@
                 </div>
 
                 <div class="remember-forgot">
-                    <label><input type="checkbox">I agree to the terms & conditions</label>
+                    <label><input type="checkbox"> I agree to the terms & conditions</label>
                 </div>
 
                 <button type="submit" class="btn">Register</button>
-                <h2>    or    </h2>
+                <h2>or</h2>
                 <button class="btn" onclick="loginWithSpotify()">Login with Spotify</button>
 
                 <div class="register">
-                    <p>Already have an account?
-                        <a href="#" class="login-link">Log in!</a>
-                    </p>
+                    <p>Already have an account? <a href="#" class="login-link">Log in!</a></p>
                 </div>
             </form>
         </div>
     </div>
+    <spline-viewer class = "musichouse"loading-anim-type="none" url="https://prod.spline.design/qrAS8dw5yJYB967S/scene.splinecode"></spline-viewer>
+    <script type="module" src="https://unpkg.com/@splinetool/viewer@1.9.82/build/spline-viewer.js"></script>
 
-
+    <script src="https://unpkg.com/aos@next/dist/aos.js"></script>
+    <script>
+        AOS.init();
+    </script>
     <script>
         function loginWithSpotify() {
             window.location.href = "http://localhost:5000/";
@@ -99,11 +116,9 @@
             window.location.href = "http://localhost:5000/logout";
         }
     </script>
-
     <script src="{{ url_for('static', filename='js/script.js') }}"></script>
     <script type="module" src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.esm.js"></script>
     <script nomodule src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.js"></script>
-
 </body>
-</html>
 
+</html>
