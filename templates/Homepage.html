@@ -29,19 +29,16 @@
     <div class="logrec">
         <h2>Log A Song</h2>
         <span class="icon-close2"><ion-icon name="close-outline"></ion-icon></span>
-        <form action="#">
+        <form method="POST" action="/log-song">
                 <div class="input-box">
-                    <input type="Text" required>
-                    <label>Artist:</label>
+                    <input type="Text"  name="artist" placeholder="Artist">
                 </div>
 
                 <div class="input-box">
-                    <input type="Text" required>
-                    <label>Song Title:</label>
+                    <input type="text" name="title" placeholder="Song Title">
                 </div>
                 <div class="input-box">
-                    <textarea required rows="4"></textarea>
-                    <label>Comment:</label>
+                        <textarea name="comment" placeholder="Comment"></textarea>
                 </div>
                 <div class="star-widget">
                     <input type="radio" name="rate" id="rate-5">

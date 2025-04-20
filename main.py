@@ -3,17 +3,23 @@ from flask import Flask, request, redirect, session, url_for, render_template
 from spotipy.oauth2 import SpotifyOAuth
 from spotipy.cache_handler import FlaskSessionCacheHandler
 from flask_mysqldb import MySQL
+from flask_sqlalchemy import SQLAlchemy
+
 
 app = Flask(__name__)
 
+app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql+pymysql://user:password@localhost/musicbxd'
 app.config['SECRET_KEY'] = os.urandom(64)
 app.config['MYSQL_HOST'] = 'localhost'
 app.config['MYSQL_USER'] = 'root'
 app.config['MYSQL_PASSWORD'] = ''
 app.config['MYSQL_DB'] = 'login'
 
-mysql = MySQL(app)
+app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql+pymysql://root:@localhost/login'
+app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
+db = SQLAlchemy(app)
 
+mysql = MySQL(app)
 
 client_id = 'e277fd6395144b87a080712a4bfd11c2'
 client_secret = '229559746a76424e97d05f6a7ad6f3f5'
@@ -28,7 +34,26 @@ sp_oauth = SpotifyOAuth(
     scope=scope,
     cache_handler=cache_handler,
     show_dialog=True
+
 )
+
+class SongLog(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    artist = db.Column(db.String(100), nullable=False)
+    title = db.Column(db.String(100), nullable=False)
+    comment = db.Column(db.Text, nullable=True)
+    rating = db.Column(db.Integer, nullable=True)
+
+    def __repr__(self):
+        return f'<SongLog {self.title} by {self.artist}>'
+
+@app.route('/')
+def home():
+    if not sp_oauth.validate_token(cache_handler.get_cached_token()):
+        auth_url = sp_oauth.get_authorize_url()
+        return redirect(auth_url)
+
+    return redirect(url_for('homepage'))
 
 @app.route('/login', methods=['POST'])
 def login():
@@ -60,18 +85,29 @@ def register():
 
     return redirect(url_for('musicbxd'))
 
+@app.route('/log-song', methods=['POST'])
+def log_song():
+    artist = request.form.get('artist')
+    title = request.form.get('title')
+    comment = request.form.get('comment')
+
+    rating = None
+    for i in range(1, 6):
+        if request.form.get(f'rate-{i}'):
+            rating = i
+            break
+
+    if artist and title:
+        new_log = SongLog(artist=artist, title=title, comment=comment, rating=rating)
+        db.session.add(new_log)
+        db.session.commit()
+        return redirect(url_for('homepage'))
+
 
 @app.route('/Musicbxd')
 def musicbxd():
     return render_template('MusicBxd.html')
 
-@app.route('/')
-def home():
-    if not sp_oauth.validate_token(cache_handler.get_cached_token()):
-        auth_url = sp_oauth.get_authorize_url()
-        return redirect(auth_url)
-
-    return redirect(url_for('homepage'))
 
 @app.route('/callback')
 def callback():
