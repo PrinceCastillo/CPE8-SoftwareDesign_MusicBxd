@@ -5,19 +5,17 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Profile</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+
 </head>
 <body>
     <header>
-        <h2 class="logo">MusicBxd - Profile</h2>
+        <h2 class="logo" style="cursor: pointer;" onclick="history.back()">MusicBxd</h2>
+        <h2 class="logo"> Profile </h2>
         <nav class="navigation">
         </nav>
     </header>
 
-    <main>
-        <h1>System Profile</h1>
-
-    </main>
-
+</body>
     <script src="{{ url_for('static', filename='js/script.js') }}"></script>
 </body>
 </html>

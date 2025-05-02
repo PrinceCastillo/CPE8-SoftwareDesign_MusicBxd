@@ -5,10 +5,8 @@ from spotipy.cache_handler import FlaskSessionCacheHandler
 from flask_mysqldb import MySQL
 from flask_sqlalchemy import SQLAlchemy
 
-
 app = Flask(__name__)
 
-app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql+pymysql://user:password@localhost/musicbxd'
 app.config['SECRET_KEY'] = os.urandom(64)
 app.config['MYSQL_HOST'] = 'localhost'
 app.config['MYSQL_USER'] = 'root'
@@ -24,7 +22,7 @@ mysql = MySQL(app)
 client_id = 'e277fd6395144b87a080712a4bfd11c2'
 client_secret = '229559746a76424e97d05f6a7ad6f3f5'
 redirect_uri = 'http://localhost:5000/callback'
-scope = 'user-read-private'
+scope = 'user-read-private user-read-email'
 
 cache_handler = FlaskSessionCacheHandler(session)
 sp_oauth = SpotifyOAuth(
@@ -41,19 +39,21 @@ class SongLog(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     artist = db.Column(db.String(100), nullable=False)
     title = db.Column(db.String(100), nullable=False)
-    comment = db.Column(db.Text, nullable=True)
-    rating = db.Column(db.Integer, nullable=True)
+    comment = db.Column(db.Text, nullable=False)
+    rating = db.Column(db.Integer, nullable=False)
+    user_email = db.Column(db.String(100), nullable=False)
 
     def __repr__(self):
         return f'<SongLog {self.title} by {self.artist}>'
 
 @app.route('/')
 def home():
-    if not sp_oauth.validate_token(cache_handler.get_cached_token()):
-        auth_url = sp_oauth.get_authorize_url()
-        return redirect(auth_url)
+    return render_template('MusicBxd.html')
 
-    return redirect(url_for('homepage'))
+@app.route('/spotify-login')
+def spotify_login():
+    auth_url = sp_oauth.get_authorize_url()
+    return redirect(auth_url)
 
 @app.route('/login', methods=['POST'])
 def login():
@@ -67,9 +67,21 @@ def login():
 
     if user:
         session['username'] = user[1]
+        session['email'] = email
         return redirect(url_for('homepage'))
     else:
         return render_template('MusicBxd.html', error="Invalid username or password")
+
+@app.route('/loginwithSpotify', methods=['POST'])
+def loginSpoty():
+    if sp_oauth.validate_token(cache_handler.get_cached_token()):
+        auth_url = sp_oauth.get_authorize_url()
+        return redirect(auth_url)
+
+    return redirect(url_for('homepage'))
+
+    return render_template('MusicBxd.html', error="Invalid username or password")
+
 
 @app.route('/register', methods=['POST'])
 def register():
@@ -85,34 +97,109 @@ def register():
 
     return redirect(url_for('musicbxd'))
 
+def get_email_by_username(username):
+    cur = mysql.connection.cursor()
+    cur.execute("SELECT email FROM login WHERE username = %s", (username,))
+    user = cur.fetchone()
+    cur.close()
+    return user[0] if user else None
+
 @app.route('/log-song', methods=['POST'])
 def log_song():
+    if 'username' not in session:
+        return redirect(url_for('musicbxd'))
+
     artist = request.form.get('artist')
     title = request.form.get('title')
     comment = request.form.get('comment')
 
-    rating = None
+    rating = request.form.get('rate')
     for i in range(1, 6):
         if request.form.get(f'rate-{i}'):
             rating = i
             break
 
+    user_email = session.get('email')
+
+    if not user_email:
+        return render_template('MusicBxd.html', error="User email not found. Please log in again.")
+
     if artist and title:
-        new_log = SongLog(artist=artist, title=title, comment=comment, rating=rating)
+        new_log = SongLog(
+            artist=artist,
+            title=title,
+            comment=comment,
+            rating=rating,
+            user_email=user_email
+        )
         db.session.add(new_log)
         db.session.commit()
+        print("Saved new song:", new_log)
         return redirect(url_for('homepage'))
 
+    return redirect(url_for('homepage'))
+
+@app.route('/logs')
+def user_logs():
+    if 'email' not in session:
+        return redirect(url_for('musicbxd'))
+
+    user_email = session['email']
+
+    logs = SongLog.query.filter_by(user_email=user_email).all()
+
+    return render_template('view.html', logs=logs)
 
 @app.route('/Musicbxd')
 def musicbxd():
     return render_template('MusicBxd.html')
 
+from spotipy import Spotify
 
 @app.route('/callback')
 def callback():
-    sp_oauth.get_access_token(request.args['code'])
-    return redirect(url_for('homepage'))
+    try:
+        token_info = sp_oauth.get_access_token(request.args['code'])
+        access_token = token_info['access_token']
+        sp = Spotify(auth=access_token)
+
+        user_info = sp.current_user()
+        spotify_id = user_info['id']
+        display_name = user_info.get('display_name', '')
+        email = user_info.get('email')
+
+        print("Spotify User Info:", user_info)
+
+        if not email:
+            return render_template('MusicBxd.html', error="Spotify account does not have an email.")
+
+        cur = mysql.connection.cursor()
+        cur.execute("SELECT * FROM login WHERE email = %s", (email,))
+        user = cur.fetchone()
+
+        if user:
+            cur.execute(
+                "UPDATE login SET spotify_id = %s, spotify_display_name = %s WHERE email = %s",
+                (spotify_id, display_name, email)
+            )
+        else:
+            cur.execute(
+                "INSERT INTO login (username, email, password, spotify_id, spotify_display_name) VALUES (%s, %s, %s, %s, %s)",
+                (display_name, email, '', spotify_id, display_name)
+            )
+
+        mysql.connection.commit()
+        cur.close()
+
+        session['username'] = display_name
+        session['email'] = email
+
+        print("Login successful, redirecting to homepage.")
+        return redirect(url_for('homepage'))
+
+    except Exception as e:
+        print("Spotify callback error:", str(e))
+        return render_template('MusicBxd.html', error="An error occurred during Spotify login.")
 
 
 @app.route('/homepage')
@@ -120,19 +207,14 @@ def homepage():
     return render_template('Homepage.html')
 
 
-@app.route('/View')
-def view():
-    return render_template('View.html')
-
-
 @app.route('/Profile')
 def profile():
     return render_template('Profile.html')
 
-
 @app.route('/recommendation')
 def recommendation():
     return render_template('Recommendation.html')
+
 
 @app.route('/logout')
 def logout():

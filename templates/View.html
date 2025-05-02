@@ -4,21 +4,46 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>View Logs</title>
-    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/view.css') }}">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.5/dist/css/bootstrap.min.css" rel="stylesheet">
 </head>
 <body>
     <header>
-        <h2 class="logo">MusicBxd - View Logs</h2>
-        <nav class="navigation">
-        </nav>
+        <h2 class="logo" style="cursor: pointer;" onclick="window.location.href='{{ url_for('homepage') }}'">MusicBxd</h2>
+        <h2 class="logo">View Logs</h2>
+        <nav class="navigation"> </nav>
     </header>
 
-    <main>
-        <h1>System Logs</h1>
-        <pre>
-            {{ logs_content }}
-        </pre>
-    </main>
+    <table>
+        <thead>
+            <tr>
+                <th>#</th>
+                <th>Artist</th>
+                <th>Title</th>
+                <th>Comment</th>
+                <th>Rating</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for log in logs %}
+            <tr>
+                <td>{{ log.id }}</td>
+                <td>{{ log.artist }}</td>
+                <td>{{ log.title }}</td>
+                <td>{{ log.comment }}</td>
+                <td>
+                    {% for i in range(log.rating) %}
+                        ★
+                    {% endfor %}
+                </td>
+            </tr>
+            {% else %}
+            <tr>
+                <td colspan="5" class="no-logs">No logs found.</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
 
     <script src="{{ url_for('static', filename='js/script.js') }}"></script>
 </body>

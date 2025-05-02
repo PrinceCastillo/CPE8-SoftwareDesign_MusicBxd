@@ -39,3 +39,4 @@ async function getUserProfile() {
 }
 
 document.querySelector('.btnFetchProfile').addEventListener('click', getUserProfile);
+

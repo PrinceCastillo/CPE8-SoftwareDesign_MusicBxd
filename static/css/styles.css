@@ -207,10 +207,7 @@ header {
 .btn:hover {
     background: #00ff99;
 
-}
 
-.logrec.active-popup {
-    display: block;
 }
 
 .icon-close2 {
@@ -227,31 +224,32 @@ header {
 
 }
 
-.star-widget {
-    direction: rtl;
-    text-align: center;
-    font-size: 30px;
+.rating {
+  direction: rtl;
+  unicode-bidi: bidi-override;
+  display: inline-flex;
 }
 
-.star-widget input {
-    display: none;
+.rating input {
+  display: none;
 }
 
-.star-widget label {
-    color: #444;
-    font-size: 40px;
-    cursor: pointer;
-    transition: color 0.3s;
+.rating label {
+  font-size: 2em;
+  color: #ccc;
+  cursor: pointer;
+  transition: color 0.2s;
 }
 
-.star-widget input:checked ~ label {
-    color: gold;
+.rating input:checked ~ label {
+  color: gold;
 }
 
-.star-widget label:hover,
-.star-widget label:hover ~ label {
-    color: #00ff99;
+.rating label:hover,
+.rating label:hover ~ label {
+  color: gold;
 }
+
 
 .sidebar {
    position: fixed;

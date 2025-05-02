@@ -10,3 +10,4 @@ btnPopup2.addEventListener('click', () => {
 iconClose2.addEventListener('click', () => {
      logrec.classList.remove('active-popup');
 });
+
