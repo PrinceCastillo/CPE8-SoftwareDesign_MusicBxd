@@ -14,22 +14,20 @@
         <nav class="navigation">
         </nav>
     </header>
-    <div class="profile-header">
-    <img src="https://via.placeholder.com/160" alt="User Profile Picture">
-    <div class="info">
-        {% for username in register %}
-            <h1>{{ username }}</h1>
-        {% endfor %}
-    </div>
-</div>
 
 
 <h2>Your Liked Songs</h2>
-<ul>
+<ul id="likedSongsList">
     {% for song in liked_songs %}
-        <li>{{ song.title }} by {{ song.artist }}</li>
+        <li>
+            <span class="song-title">{{ song.title }}</span> by {{ song.artist }}
+            <form method="POST" action="{{ url_for('remove_like', song_id=song.id) }}" style="display: inline;">
+                <button type="submit">Remove</button>
+            </form>
+        </li>
     {% else %}
-        <li>No liked songs yet.</li>
+        <li class="no-songs">No liked songs yet.</li>
+
     {% endfor %}
 </ul>
 

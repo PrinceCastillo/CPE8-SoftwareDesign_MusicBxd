@@ -14,7 +14,10 @@
         <nav class="navigation"> </nav>
     </header>
 
-    <table>
+<div class="container mt-4">
+    <input type="text" id="searchInput" class="form-control mb-3" placeholder="Search by song title..." onkeyup="filterLogs()">
+
+    <table class="table table-dark table-bordered table-hover">
         <thead>
             <tr>
                 <th>#</th>
@@ -22,11 +25,12 @@
                 <th>Title</th>
                 <th>Comment</th>
                 <th>Rating</th>
+                <th>Delete</th>
             </tr>
         </thead>
-        <tbody>
+        <tbody id="logsTable">
             {% for log in logs %}
-            <tr>
+            <tr data-title="{{ log.title|lower }}">
                 <td>{{ log.id }}</td>
                 <td>{{ log.artist }}</td>
                 <td>{{ log.title }}</td>
@@ -36,15 +40,20 @@
                         ★
                     {% endfor %}
                 </td>
+                <td>
+                    <button type="submit" onclick="removeLog({{ log.id }})">Remove</button>
+                </td>
             </tr>
             {% else %}
             <tr>
-                <td colspan="5" class="no-logs">No logs found.</td>
+                <td colspan="6" class="text-center">No logs found.</td>
             </tr>
             {% endfor %}
         </tbody>
     </table>
+</div>
 
-    <script src="{{ url_for('static', filename='js/script.js') }}"></script>
+
+    <script src="{{ url_for('static', filename='js/view.js') }}"></script>
 </body>
 </html>

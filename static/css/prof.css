@@ -100,6 +100,58 @@ header {
     background: #00ff99;
 }
 
+ul#likedSongsList {
+    list-style: none;
+    padding: 0;
+    margin-top: 20px;
+    width: 100%;
+    max-width: 600px;
+}
+
+ul#likedSongsList li {
+    background-color: #1d1e23;
+    border: 1px solid #2a2b30;
+    border-radius: 12px;
+    padding: 16px 20px;
+    margin-bottom: 12px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    transition: all 0.3s ease;
+}
+
+ul#likedSongsList li:hover {
+    background-color: #2b2c32;
+}
+
+.song-title {
+    font-weight: 500;
+    color: #ffd369;
+}
+
+button {
+    background-color: #4bff94;
+    border: none;
+    color: #fff;
+    padding: 8px 14px;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: background-color 0.2s ease;
+}
+
+button:hover {
+    background-color: #ff944b;
+}
+
+.no-songs {
+    background-color: #1d1e23;
+    padding: 10px 20px;
+    border-radius: 8px;
+    font-style: italic;
+    color: #bbb;
+    margin-top: 10px;
+}
+
 .profile-header {
     display: flex;
     align-items: center;
