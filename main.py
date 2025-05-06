@@ -280,6 +280,22 @@ def like_song():
 
     return jsonify({'message': 'Song liked!'})
 
+@app.route('/delete-log/<int:log_id>', methods=['DELETE'])
+def delete_log(log_id):
+    log = db.session.get(SongLog, log_id)
+    if log:
+        db.session.delete(log)
+        db.session.commit()
+        return jsonify({"success": True})
+    return jsonify({"error": "Log not found"}), 404
+
+@app.route('/remove-like/<int:song_id>', methods=['POST'])
+def remove_like(song_id):
+    song = LikedSong.query.get_or_404(song_id)
+    db.session.delete(song)
+    db.session.commit()
+    return redirect(url_for('profile'))
+
 
 if __name__ == '__main__':
     app.run(debug=True)
