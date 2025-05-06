@@ -250,7 +250,6 @@ header {
   color: gold;
 }
 
-
 .sidebar {
    position: fixed;
    left: 0;
@@ -262,6 +261,22 @@ header {
    padding: 20px;
    display: flex;
    flex-direction: column;
+}
+
+.sidebar h2 {
+    font-size: 16px;
+    margin-top: 20px;
+    color: #b3b3b3;
+}
+.sidebar ul {
+    list-style: none;
+    padding: 0;
+    margin: 10px 0;
+}
+.sidebar ul li {
+    padding: 8px 0;
+    color: #b3b3b3;
+    cursor: pointer;
 }
 
 .liked-grid {

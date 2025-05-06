@@ -13,16 +13,73 @@
         <nav class="navigation"> </nav>
     </header>
 
-    <h3>🎧 Your Random Song</h3>
-    <button class="btn" onclick="getRecommendation()">Get a Recommendation</button>
+<div id="recommendation-container" style="text-align: center; margin-top: 50px;">
+    <button id="get-recommendation" style="padding: 10px 20px; font-size: 16px;">
+        Get a Recommendation
+    </button>
 
-    <div id="song-display" style="display: none;">
+    <div id="song-display" style="margin-top: 30px; display: none;">
         <p id="song-title"></p>
         <p id="song-artist"></p>
-        <audio id="audio-player" controls></audio>
+        <button id="like-button" style="padding: 5px 15px;">❤️ Like</button>
     </div>
+</div>
 
+    <script>
+    document.getElementById('get-recommendation').addEventListener('click', function() {
+        fetch('/recommend-random')
+        .then(response => response.json())
+        .then(data => {
+            if (data.error) {
+                alert('Error fetching song.');
+                return;
+            }
+            const songDisplay = document.getElementById('song-display');
+            document.getElementById('song-title').innerText = `🎵 Title: ${data.title}`;
+            document.getElementById('song-artist').innerText = `👤 Artist: ${data.artist}`;
+            songDisplay.style.display = 'block';
+
+            // Store song data for the like button
+            songDisplay.dataset.title = data.title;
+            songDisplay.dataset.artist = data.artist;
+        })
+        .catch(error => {
+            console.error('Error:', error);
+        });
+    });
+
+    document.getElementById('like-button').addEventListener('click', function() {
+        const songDisplay = document.getElementById('song-display');
+        const title = songDisplay.dataset.title;
+        const artist = songDisplay.dataset.artist;
+
+        fetch('/like-song', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/x-www-form-urlencoded',
+            },
+            body: `title=${encodeURIComponent(title)}&artist=${encodeURIComponent(artist)}`
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.error) {
+                alert(data.error);
+            } else {
+                alert(data.message);
+            }
+        })
+        .catch(error => {
+            console.error('Error:', error);
+        });
+    });
+    </script>
 
     <script src="{{ url_for('static', filename='js/script.js') }}"></script>
+</body>
+</html>
+
+
+
+    <script src="{{ url_for('static', filename='js/scriptss.js') }}"></script>
 </body>
 </html>

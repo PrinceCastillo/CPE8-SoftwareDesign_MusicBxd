@@ -1,5 +1,5 @@
 import os
-from flask import Flask, request, redirect, session, url_for, render_template
+from flask import Flask, request, redirect, session, url_for, render_template, jsonify
 from spotipy.oauth2 import SpotifyOAuth
 from spotipy.cache_handler import FlaskSessionCacheHandler
 from flask_mysqldb import MySQL
@@ -206,11 +206,6 @@ def callback():
 def homepage():
     return render_template('Homepage.html')
 
-
-@app.route('/Profile')
-def profile():
-    return render_template('Profile.html')
-
 @app.route('/recommendation')
 def recommendation():
     return render_template('Recommendation.html')
@@ -219,7 +214,71 @@ def recommendation():
 @app.route('/logout')
 def logout():
     session.clear()
+    
     return redirect(url_for('musicbxd'))
+
+
+
+@app.route('/recommend-random')
+def recommend_random():
+    import random, requests
+
+    LASTFM_API_KEY = '04ad112619f7064b2815e5d571a107d8'
+    url = f"http://ws.audioscrobbler.com/2.0/?method=chart.gettoptracks&api_key={LASTFM_API_KEY}&format=json&limit=100"
+
+    try:
+        response = requests.get(url)
+        tracks = response.json()['tracks']['track']
+        random_track = random.choice(tracks)
+
+        return {
+            'title': random_track['name'],
+            'artist': random_track['artist']['name'],
+            'url': random_track['url']
+        }
+
+    except Exception as e:
+        return {'error': 'Failed to fetch song.'}, 500
+
+class LikedSong(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    title = db.Column(db.String(100), nullable=False)
+    artist = db.Column(db.String(100), nullable=False)
+    user_email = db.Column(db.String(100), nullable=False)
+
+    def __repr__(self):
+        return f'<LikedSong {self.title} by {self.artist}>'
+
+
+@app.route('/Profile')
+def profile():
+    if 'email' not in session:
+        return redirect(url_for('musicbxd'))
+
+    user_email = session['email']
+    liked_songs = LikedSong.query.filter_by(user_email=user_email).all()
+
+    return render_template('Profile.html', liked_songs=liked_songs)
+
+
+@app.route('/like-song', methods=['POST'])
+def like_song():
+    if 'email' not in session:
+        return jsonify({'error': 'Unauthorized'}), 401
+
+    title = request.form.get('title')
+    artist = request.form.get('artist')
+
+    if not title or not artist:
+        return jsonify({'error': 'Invalid data'}), 400
+
+    user_email = session.get('email')
+
+    like = LikedSong(title=title, artist=artist, user_email=user_email)
+    db.session.add(like)
+    db.session.commit()
+
+    return jsonify({'message': 'Song liked!'})
 
 
 if __name__ == '__main__':

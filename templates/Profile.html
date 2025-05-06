@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Profile</title>
-    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/prof.css') }}">
 
 </head>
 <body>
@@ -14,8 +14,27 @@
         <nav class="navigation">
         </nav>
     </header>
+    <div class="profile-header">
+    <img src="https://via.placeholder.com/160" alt="User Profile Picture">
+    <div class="info">
+        {% for username in register %}
+            <h1>{{ username }}</h1>
+        {% endfor %}
+    </div>
+</div>
 
-</body>
-    <script src="{{ url_for('static', filename='js/script.js') }}"></script>
+
+<h2>Your Liked Songs</h2>
+<ul>
+    {% for song in liked_songs %}
+        <li>{{ song.title }} by {{ song.artist }}</li>
+    {% else %}
+        <li>No liked songs yet.</li>
+    {% endfor %}
+</ul>
+
+
+<script src="{{ url_for('static', filename='js/script.js') }}"></script>
 </body>
 </html>
+
