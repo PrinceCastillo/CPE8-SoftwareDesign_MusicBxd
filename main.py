@@ -53,7 +53,6 @@ def home():
 @app.route('/spotify-login')
 def spotify_login():
     auth_url = sp_oauth.get_authorize_url()
-    flash('Successfully Logged In!', 'success')
     return redirect(auth_url)
 
 @app.route('/login', methods=['POST'])
