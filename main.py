@@ -1,5 +1,5 @@
 import os
-from flask import Flask, request, redirect, session, url_for, render_template, jsonify
+from flask import Flask, flash, request, redirect, session, url_for, render_template, jsonify
 from spotipy.oauth2 import SpotifyOAuth
 from spotipy.cache_handler import FlaskSessionCacheHandler
 from flask_mysqldb import MySQL
@@ -53,6 +53,7 @@ def home():
 @app.route('/spotify-login')
 def spotify_login():
     auth_url = sp_oauth.get_authorize_url()
+    flash('Successfully Logged In!', 'success')
     return redirect(auth_url)
 
 @app.route('/login', methods=['POST'])
@@ -68,6 +69,7 @@ def login():
     if user:
         session['username'] = user[1]
         session['email'] = email
+        flash('Logged in successfully!', 'success')
         return redirect(url_for('homepage'))
     else:
         return render_template('MusicBxd.html', error="Invalid username or password")
@@ -77,10 +79,7 @@ def loginSpoty():
     if sp_oauth.validate_token(cache_handler.get_cached_token()):
         auth_url = sp_oauth.get_authorize_url()
         return redirect(auth_url)
-
     return redirect(url_for('homepage'))
-
-    return render_template('MusicBxd.html', error="Invalid username or password")
 
 
 @app.route('/register', methods=['POST'])
@@ -95,6 +94,8 @@ def register():
     mysql.connection.commit()
     cur.close()
 
+
+    flash('Successfully registered!', 'success')
     return redirect(url_for('musicbxd'))
 
 def get_email_by_username(username):
@@ -135,6 +136,7 @@ def log_song():
         db.session.add(new_log)
         db.session.commit()
         print("Saved new song:", new_log)
+        flash('Successfully Logged!', 'success')
         return redirect(url_for('homepage'))
 
     return redirect(url_for('homepage'))
@@ -195,6 +197,7 @@ def callback():
         session['email'] = email
 
         print("Login successful, redirecting to homepage.")
+        flash('Welcome To MusicBxd', 'success')
         return redirect(url_for('homepage'))
 
     except Exception as e:
@@ -214,9 +217,8 @@ def recommendation():
 @app.route('/logout')
 def logout():
     session.clear()
-    
+    flash('Logged out successfully!', 'info')
     return redirect(url_for('musicbxd'))
-
 
 
 @app.route('/recommend-random')

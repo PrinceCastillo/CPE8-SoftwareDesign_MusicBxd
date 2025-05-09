@@ -7,36 +7,43 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>MusicBxd</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+
 </head>
 
 <body>
     <header>
         <h2 class="logo">MusicBxd</h2>
         <nav class="navigation">
-            <a href="#">Home</a>
-            <a href="#">About</a>
-            <a href="#">Contact Us</a>
             <button class="btnLogin-popup">Login</button>
         </nav>
     </header>
 
     <main>
     <div class="content">
-
-
         <h1>Welcome to MusicBxd!</h1>
 
         <p class="description">
-           A music logging app made for your music diaries where you can feel like you're in little own box!
+           A music logging app made for your music diaries where you can feel like you're in your own little box!
 
         </p>
 
         <div class="buttons">
-            <a href="#" class="btn-get-started">Documentation &gt;</a>
-            <a href="#" class="btn-signing-main">Get started &gt;</a>
+            <a href="https://open.spotify.com/" class="btn-get-started">Spotify &gt;</a>
         </div>
     </div>
     </main>
+
+    {% with messages = get_flashed_messages(with_categories=true) %}
+  {% if messages %}
+    <div class="flash-messages">
+      {% for category, message in messages %}
+        <div class="flash {{ category }}">{{ message }}</div>
+      {% endfor %}
+    </div>
+  {% endif %}
+{% endwith %}
+
+
 
     <div class="wrapper">
         <span class="icon-close"><ion-icon name="close-outline"></ion-icon></span>
@@ -85,7 +92,7 @@
                 </div>
 
                 <div class="remember-forgot">
-                    <label><input type="checkbox"> <a href="#">agree to the terms & conditions</a></label>
+                    <input type="checkbox" required> <a href="#">agree to the terms & conditions</a>
                 </div>
 
                 <button type="submit" class="btn">Register</button>
@@ -98,6 +105,19 @@
             </form>
         </div>
     </div>
+
+    <footer>
+        <div class="footer-content">
+            <p>&copy; 2025 MusicBxd. All rights reserved.</p>
+            <p>Created by Prince John F. Castillo & Ryza Mae B. Penafiel </p>
+            <div class="social-icons">
+                <a href="https://www.instagram.com/cleverjhns/"><ion-icon name="logo-instagram"></ion-icon></a>
+                <a href="https://open.spotify.com/user/kyfbsps1j162qssrffwsfdj96"><ion-icon name="musical-notes-outline"></ion-icon></a>
+                <a href="https://www.facebook.com/profile.php?id=100009842225866"><ion-icon name="logo-facebook"></ion-icon></a>
+            </div>
+        </div>
+    </footer>
+
     <spline-viewer class = "musichouse"loading-anim-type="none" url="https://prod.spline.design/qrAS8dw5yJYB967S/scene.splinecode"></spline-viewer>
     <script type="module" src="https://unpkg.com/@splinetool/viewer@1.9.82/build/spline-viewer.js"></script>
 
